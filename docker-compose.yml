@@ -1,0 +1,61 @@
+version: '3.8'
+
+
+services:
+  mysql:
+    image: mysql:latest
+    command: --default-authentication-plugin=caching_sha2_password
+    restart: always
+    container_name: mysql_db
+    environment:
+      MYSQL_DATABASE: aromio
+      DB_HOST: mysql
+      MYSQL_USER: eniemed
+      MYSQL_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:    
+      - laravel-network
+
+
+  phpmyadmin:
+    image: phpmyadmin
+    container_name: phpmyadmin
+    ports:
+      - "8081:80"
+    environment:
+      - PMA_ARBITRARY=1
+    depends_on:
+      - mysql
+    volumes:
+      - phpmyadmin_data:/sessions
+    networks:  
+      - laravel-network
+
+
+  laravel:
+    image: php:8.2-apache
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/var/www/html
+    depends_on:
+      - mysql
+    command: /bin/bash -c "docker-php-ext-install pdo_mysql && php -S 0.0.0.0:8000 -t public"
+    links:
+      - mysql
+    networks:    
+      - laravel-network
+
+
+networks:
+  laravel-network:
+    driver: bridge
+
+
+volumes:
+  mysql_data:
+  phpmyadmin_data:
