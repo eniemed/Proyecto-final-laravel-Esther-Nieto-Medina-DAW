@@ -75,22 +75,25 @@ class ProductsController extends Controller
 
 
     public function filterProducts(Request $request)
-{
-    $products = products::query()
-        ->when($request->flavor, function ($query, $flavor) {
-            return $query->where('flavor_name', $flavor);
-        })
-        ->when($request->weight, function ($query, $weight) {
-            return $query->where('weight', $weight);
-        })
-        ->get();
+    {
+        $products = products::query()
+            ->when($request->flavor, function ($query, $flavor) {
+                return $query->where('flavor_name', $flavor);
+            })
+            ->when($request->weight, function ($query, $weight) {
+                return $query->where('weight', $weight);
+            })
+            ->when($request->region, function ($query, $region) {
+                return $query->where('region', $region);
+            })
+            ->get();
 
-    if ($products->isEmpty()) {
-        return response()->json(['error' => 'Producto no encontrado'], 404);
+        if ($products->isEmpty()) {
+            return response()->json(['error' => 'Producto no encontrado'], 404);
+        }
+
+        return response()->json($products);
     }
-
-    return response()->json($products);
-}
 
 
 
