@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Models\users;
+use App\Models\products;
 
 class usersController extends Controller
 {
@@ -14,19 +15,6 @@ class usersController extends Controller
 
         return response()->json($users);
     }
-
-    // public function getUser(Request $request)
-    // {
-    //     $username = $request->input('username');
-    //     $password = $request->input('password');
-
-    //     $user = users::where('username', $username)->first();
-
-    //     if ($user && $user->password === $password) {
-    //         return response()->json(['user' => $user]);
-    //     }
-
-    // }
 
     public function signup(Request $request)
     {
@@ -61,16 +49,24 @@ class usersController extends Controller
         return response()->json(['message' => 'Invalid credentials'], 401);
     }
 
-    // public function login(Request $request)
-    // {
-    //     $user = users::where('username', $request->input('username'))->first();
 
-    //     if ($request->input('password') === $user->password) {
-    //         return response()->json(['message' => 'Successful authentication']);
-    //     }
 
-    //     return response()->json(['message' => 'Invalid credentials'], 401);
-    // }
+
+    public function getProducts($username)
+    {
+        $user = users::where('username', $username)->first();
+
+        if (!$user) {
+            return response()->json(['error' => 'User not found'], 404);
+        }
+
+        $ids = explode(',', $user->cart);
+
+        $products = products::findMany($ids);
+
+        return response()->json(['products' => $products]);
+    }
+
 
     public function wishlist(Request $request)
     {

@@ -23,6 +23,8 @@ Route::get('/wishlist', [usersController::class, "wishlist"]);
 Route::get('/products/filter', [productsController::class, 'filterProducts']);
 Route::get('/products/flavors/{flavor}', [productsController::class, 'flavorFilter']);
 Route::put('/wishlist/{username}', [usersController::class, "removeFromWishlist"]);
+
+Route::get('cart/{username}/products', [UsersController::class, 'getProducts']);
 Route::delete('/wishlist/{username}/clear', [usersController::class, "clearWishlist"]);
 Route::put('/wishlist/{username}/add/{id}', [usersController::class, 'addToWishlist']);
 Route::get('/{id}', [productsController::class, "findById"]);
