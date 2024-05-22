@@ -74,13 +74,6 @@ class ProductsController extends Controller
 
     public function filterProducts(Request $request)
     {
-        $minPrice = $request->minPrice;
-        $maxPrice = $request->maxPrice;
-
-        if ($minPrice && $maxPrice) {
-            $minPrice = min($minPrice, $maxPrice);
-            $maxPrice = max($minPrice, $maxPrice);
-        }
 
         $products = products::query()
             ->when($request->flavor, function ($query, $flavor) {
@@ -92,14 +85,7 @@ class ProductsController extends Controller
             ->when($request->region, function ($query, $region) {
                 return $query->where('region', $region);
             })
-            ->when($minPrice && $maxPrice, function ($query) use ($minPrice, $maxPrice) {
-                return $query->whereBetween('price', [$minPrice, $maxPrice]);
-            })
             ->get();
-
-        foreach ($products as $product) {
-            $product->price = round($product->price, 2);
-        }
 
         if ($products->isEmpty()) {
             return response()->json(['error' => 'Producto no encontrado'], 404);
@@ -107,32 +93,5 @@ class ProductsController extends Controller
 
         return response()->json($products);
     }
-
-
-
-
-    public function getPriceRange($num1, $num2)
-    {
-        $minPrice = min($num1, $num2);
-        $maxPrice = max($num1, $num2);
-
-        $products = products::whereBetween('price', [$minPrice, $maxPrice])->get();
-
-        foreach ($products as $product) {
-            $product->price = round($product->price, 2);
-        }
-
-        if ($products->isEmpty()) {
-            return response()->json(['error' => 'No products found in this price range'], 404);
-        }
-
-        return response()->json($products);
-    }
-
-
-
-
-
-
 
 }
