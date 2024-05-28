@@ -16,6 +16,30 @@ class usersController extends Controller
         return response()->json($users);
     }
 
+
+    public function removeAllOfProductFromCart($username, $productId)
+    {
+        $user = users::where('username', $username)->first();
+
+        if (!$user) {
+            return response()->json(['error' => 'User not found'], 404);
+        }
+
+        $ids = explode(',', $user->cart);
+
+        // Filtra el array para eliminar todos los elementos que sean iguales al productId
+        $ids = array_filter($ids, function ($id) use ($productId) {
+            return $id != $productId;
+        });
+
+        // Actualiza el campo cart del usuario
+        $user->cart = implode(',', $ids);
+        $user->save();
+
+        return response()->json(['message' => 'Product removed from cart']);
+    }
+
+
     public function signup(Request $request)
     {
 
@@ -51,6 +75,32 @@ class usersController extends Controller
 
 
 
+    public function addProductToCart($username, $productId)
+    {
+        $user = users::where('username', $username)->first();
+
+        if (!$user) {
+            return response()->json(['error' => 'User not found'], 404);
+        }
+
+        $ids = explode(', ', $user->cart);
+
+        // Comprueba si el producto es válido (1-20)
+        if ($productId < 1 || $productId > 20) {
+            return response()->json(['error' => 'Invalid product ID'], 400);
+        }
+
+        // Agrega el producto al carrito
+        array_push($ids, $productId);
+
+        // Actualiza el campo cart del usuario
+        $user->cart = implode(',', $ids);
+        $user->save();
+
+        return response()->json(['message' => 'Product added to cart']);
+    }
+
+
 
     public function getProducts($username)
     {
@@ -66,6 +116,29 @@ class usersController extends Controller
 
         return response()->json(['products' => $products]);
     }
+
+    public function removeProductFromCart($username, $productId)
+    {
+        $user = users::where('username', $username)->first();
+
+        if (!$user) {
+            return response()->json(['error' => 'User not found'], 404);
+        }
+
+        $ids = explode(',', $user->cart);
+
+        $index = array_search($productId, $ids);
+
+        if ($index !== false) {
+            unset($ids[$index]);
+        }
+
+        $user->cart = implode(',', $ids);
+        $user->save();
+
+        return response()->json(['message' => 'Product removed from cart']);
+    }
+
 
 
     public function wishlist(Request $request)
