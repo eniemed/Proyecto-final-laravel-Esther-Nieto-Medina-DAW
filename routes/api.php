@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get("/flavors", [flavorsController::class,"index"]);
 Route::get("/users", [usersController::class,"index"]);
+Route::get('/user/{username}', [usersController::class,"getUser"]);
 Route::get("/suppliers", [suppliersController::class,"index"]);
 Route::get("/products", [productsController::class,"index"]);
 Route::get("/orders", [ordersController::class,"index"]);

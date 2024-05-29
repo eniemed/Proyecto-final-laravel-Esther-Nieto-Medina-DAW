@@ -212,6 +212,17 @@ class usersController extends Controller
         return response()->json(['message' => 'Product added to wishlist successfully']);
     }
 
+    public function getUser($username)
+    {
+        $user = users::find($username);
+
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+
+        return response()->json($user);
+    }
+
 
 
 
