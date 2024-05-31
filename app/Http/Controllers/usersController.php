@@ -223,6 +223,19 @@ class usersController extends Controller
         return response()->json($user);
     }
 
+    public function clearUserDiscounts($username)
+    {
+        $user = users::find($username);
+
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+
+        $user->discounts = null;
+        $user->save();
+
+        return response()->json(['message' => 'Discounts cleared successfully']);
+    }
 
 
 

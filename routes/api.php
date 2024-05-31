@@ -24,10 +24,14 @@ Route::get('/products/filter', [productsController::class, 'filterProducts']);
 Route::get('/products/flavors/{flavor}', [productsController::class, 'flavorFilter']);
 Route::put('/wishlist/{username}', [usersController::class, "removeFromWishlist"]);
 
+Route::post('/user/{username}/clear-discount', [usersController::class, "clearUserDiscounts"]);
+
 Route::get('cart/{username}/products', [usersController::class, 'getProducts']);
 Route::delete('/user/{username}/cart/{productId}', [usersController::class, 'removeProductFromCart']);
 Route::post('/user/{username}/cart/{productId}', [usersController::class, 'addProductToCart']);
 Route::delete('/user/{username}/cart/{productId}/all', [usersController::class, 'removeAllOfProductFromCart']);
+
+Route::get('/orders/{username}', [ordersController::class, 'getOrders']);
 
 
 Route::delete('/wishlist/{username}/clear', [usersController::class, "clearWishlist"]);

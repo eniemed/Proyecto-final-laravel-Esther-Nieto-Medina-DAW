@@ -12,4 +12,11 @@ class ordersController extends Controller
 
         return response()->json($orders);
     }
+
+    public function getOrders($username)
+    {
+        $orders = orders::where('username', $username)->get();
+
+        return response()->json($orders);
+    }
 }
