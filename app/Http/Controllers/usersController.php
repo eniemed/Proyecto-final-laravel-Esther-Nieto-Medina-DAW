@@ -237,6 +237,52 @@ class usersController extends Controller
         return response()->json(['message' => 'Discounts cleared successfully']);
     }
 
+    public function getGiftPacks($username)
+    {
+        $user = users::find($username);
+
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+
+        // aqui divido la cadena gift_packs en múltiples cadenas, cada una conteniendo un solo objeto JSON
+        $giftPacksStrings = explode('],[', $user->gift_packs);
+
+        $giftPacks = [];
+        foreach ($giftPacksStrings as $giftPackString) {
+            if ($giftPackString[0] != '[') {
+                $giftPackString = '[' . $giftPackString;
+            }
+            if ($giftPackString[-1] != ']') {
+                $giftPackString = $giftPackString . ']';
+            }
+
+            $giftPack = json_decode($giftPackString, true);
+            $giftPacks[] = $giftPack;
+        }
+
+        return response()->json($giftPacks);
+    }
+
+    public function addGiftPack($username)
+    {
+        $user = users::find($username);
+
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+
+        if (substr($user->gift_packs, -1) === ']') {
+            $user->gift_packs .= ',[]';
+        } else {
+            $user->gift_packs .= '[]';
+        }
+
+        $user->save();
+
+        return response()->json(['message' => 'Gift pack added successfully']);
+    }
+
 
 
 }

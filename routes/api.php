@@ -33,6 +33,8 @@ Route::delete('/user/{username}/cart/{productId}/all', [usersController::class, 
 
 Route::get('/orders/{username}', [ordersController::class, 'getOrders']);
 
+Route::get('/users/{username}/gift-packs', [usersController::class, 'getGiftPacks']);
+Route::post('/users/{username}/gift-packs', [usersController::class, 'addGiftPack']);
 
 Route::delete('/wishlist/{username}/clear', [usersController::class, "clearWishlist"]);
 Route::put('/wishlist/{username}/add/{id}', [usersController::class, 'addToWishlist']);
