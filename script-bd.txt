@@ -1,0 +1,124 @@
+
+-- TABLA FLAVORS
+CREATE TABLE flavors (
+    name VARCHAR(255) PRIMARY KEY,
+    description VARCHAR(255)
+);
+
+-- TABLA SUPPLIERS
+CREATE TABLE suppliers (
+	id INT AUTO_INCREMENT PRIMARY KEY,
+    region VARCHAR(255)
+);
+
+
+-- TABLA PRODUCTS
+CREATE TABLE products (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255),
+    price FLOAT,
+    flavor_name VARCHAR(255),
+    description VARCHAR(255),
+    weight INT,
+    image VARCHAR(255),
+	region VARCHAR(255),
+    FOREIGN KEY (flavor_name) REFERENCES flavors(name)
+);
+
+CREATE TABLE users (
+	first_name VARCHAR(255),
+	last_name VARCHAR(255),
+	username VARCHAR(255) PRIMARY KEY,
+	email VARCHAR(255) UNIQUE,
+	password VARCHAR(255),
+	wishlist VARCHAR(255) NULL,
+        cart VARCHAR(999) NULL,
+	discounts FLOAT DEFAULT 0.15
+);
+
+CREATE TABLE orders (
+	order_id INT AUTO_INCREMENT PRIMARY KEY,
+	username VARCHAR(255),
+	date DATE DEFAULT (CURRENT_DATE),
+	FOREIGN KEY (username) REFERENCES users(username)
+);
+
+
+INSERT INTO flavors (name, description) VALUES
+('Dark Chocolate', 'Rich and intense chocolate flavor'),
+('Black Cherry', 'Sweet and fruity cherry notes'),
+('Citrus', 'Bright and tangy citrus flavor'),
+('Cocoa', 'Smooth and velvety cocoa notes'),
+('Hazelnut', 'Nutty and aromatic hazelnut'),
+('Molasses', 'Deep and sweet molasses flavor'),
+('Smooth', 'Mild and smooth taste'),
+('Spicy', 'Bold and spicy kick'),
+('Earthy', 'Earthy and robust profile'),
+('Cinnamon', 'Warm and aromatic cinnamon'),
+('Clove', 'Distinctive clove spice'),
+('Blueberry', 'Sweet and juicy blueberry notes'),
+('Nutty', 'Rich and nutty aroma'),
+('Almond', 'Smooth almond undertones'),
+('Toffee', 'Sweet and buttery toffee flavor'),
+('Blackcurrant', 'Bold and tart blackcurrant notes'),
+('Coconut', 'Subtle and refreshing coconut hint'),
+('Cardamom', 'Exotic and fragrant cardamom'),
+('Vanilla', 'Smooth and creamy vanilla'),
+('Floral', 'Light and floral essence'),
+('Honey', 'Delicate and sweet honey notes'),
+('Smoke', 'Bold and smoky flavor'),
+('Tropical Fruit', 'Lush and tropical fruit blend');
+
+
+
+-- insert SUPPLIERS
+
+INSERT INTO suppliers (region)
+VALUES
+('Central America'),
+('Africa'),
+('South America'),
+('Asia Pacific'),
+('Middle East');
+
+
+-- insert Products
+INSERT INTO products (name, price, flavor_name, description, weight, image, region)
+VALUES
+('Signature Blend', 12.99, 'Dark Chocolate', 'A rich, full-bodied coffee with notes of dark chocolate and black cherry.', 300, 'https://iili.io/H8Y78Qt.webp', 'Central America'),
+('Golden Sunrise', 10.99, 'Citrus', 'A smooth and bright coffee with a citrusy kick.', 700, 'https://iili.io/H8Y7WEg.webp', 'Africa'),
+('Rainforest Rhapsody', 15.99, 'Cocoa', 'An earthy and complex coffee with notes of toasted nuts and caramel.', 500, 'https://iili.io/H8Y7kTN.webp', 'South America'),
+('Harvest Moon', 9.99, 'Cocoa', 'A smooth and earthy blend with notes of cocoa and hazelnut.', 500, 'https://iili.io/H8Y7X4a.webp', 'Central America'),
+('Wildfire', 5.99, 'Dark Chocolate', 'A bold and smoky blend with notes of dark chocolate and molasses.', 300, 'https://iili.io/H8Y7r4s.webp', 'Africa'),
+('Walnut Wonder', 9.99, 'Nutty', 'A smooth and nutty coffee from the slopes of South America.', 700, 'https://iili.io/H8Y7gGn.webp', 'South America'),
+('Breezy Beans', 11.99, 'Citrus', 'This coffee blend is made from beans sourced from Honduras and Costa Rica. It is a light roast coffee with a bright and citrusy flavor profile. It is perfect for pour-over and drip coffee brewing methods.', 500, 'https://iili.io/H8Y7lpV.webp', 'Central America'),
+('Indo-Viet Roast', 13.99, 'Spicy', 'This coffee blend is made from beans sourced from Indonesia and Vietnam. It is a medium-dark roast coffee with a spicy and earthy flavor profile, with notes of cinnamon and clove. It is perfect for drip and French press brewing methods.', 700, 'https://iili.io/H8Y7wYv.webp', 'Asia Pacific'),
+('Ethiopian Yirgacheffe', 12.99, 'Blueberry', 'A light and fruity coffee with notes of blueberry and citrus. Grown in the highlands of Ethiopia, this coffee is sure to brighten up your morning.', 500, 'https://iili.io/H8Y7VCF.webp', 'Africa'),
+('Lazy Days', 9.99, 'Hazelnut', 'A medium-bodied coffee with a sweet and nutty flavor. Grown in the lush regions of Brazil, this coffee is perfect for a lazy afternoon.', 500, 'https://iili.io/H8Y7NvR.webp', 'South America'),
+('Andean Almond', 10.99, 'Almond', 'A smooth and mellow coffee from the mountains of South America, with hints of almond and toffee.', 300, 'https://iili.io/H8Y5Sgj.webp', 'South America'),
+('Savanna Noir', 12.99, 'Dark Chocolate', 'A bold and rich coffee from the African savanna, with notes of dark chocolate and blackcurrant.', 500, 'https://iili.io/H8Y7vjI.webp', 'Africa'),
+('Coconut Kiss', 9.99, 'Coconut', 'A light and refreshing coffee from the shores of the Asia Pacific, with a subtle coconut flavor.', 300, 'https://iili.io/H8Y7GQ1.webp', 'Asia Pacific'),
+('Arabian Nights', 13.99, 'Cardamom', 'A bold and spicy coffee from the Middle East, with notes of cardamom and cinnamon.', 500, 'https://iili.io/H8Y7ckQ.webp', 'Middle East'),
+('Midnight Mocha', 14.99, 'Dark Chocolate', 'Indulge in the rich, velvety flavors of this decadent mocha blend. Dark chocolate and espresso notes are combined with a touch of vanilla for a luxurious coffee experience.', 500, 'https://iili.io/H8Y7Opp.webp', 'South America'),
+('Himalayan Heights', 12.99, 'Floral', 'Grown on the steep slopes of the Himalayan Mountains, this coffee is known for its bright acidity and delicate floral notes. This light roast is perfect for those who prefer a more delicate flavor profile.', 500, 'https://iili.io/H8Y7j3J.webp', 'Asia Pacific'),
+('Sumatra Blend', 8.99, 'Dark Chocolate', 'Get your day started with the bold and earthy flavors of Sumatra. Grown on the lush tropical slopes of the Gayo Highlands, this coffee is known for its full body, low acidity, and notes of dark chocolate and smoke.', 500, 'https://iili.io/H8Y7UCX.webp', 'Asia Pacific'),
+('Bali Bliss', 11.99, 'Hazelnut', 'Escape to the tropical paradise of Bali with this smooth and mellow blend. Grown on small family farms, this coffee is shade-grown and hand-picked for a rich and nuanced flavor profile.', 700, 'https://iili.io/H8Y71TB.webp', 'Asia Pacific'),
+('Central Perk', 9.99, 'Nutty', 'A medium roast coffee with a smooth, nutty flavor and a hint of caramel. Inspired by your favorite coffee shop!', 700, 'https://iili.io/H8Y7aYx.webp', 'Central America'),
+('Chilean Charm', 12.99, 'Coconut', 'This coffee boasts a smooth and balanced flavor, with notes of chocolate, caramel, and a hint of fruit. It has a medium body and a subtle acidity that will leave you feeling refreshed and energized.', 300, 'https://iili.io/H8Y7EhP.webp', 'South America');
+
+
+
+-- INSERTS DE Users
+
+INSERT INTO users (first_name, last_name, username, email, password, wishlist, cart) VALUES
+('Esther', 'Nieto', 'eniemed', 'eniemed@gmail.com', 'eniemed123', '[1, 6, 9, 15]', '5, 1, 3, 12'),
+('Pepe', 'Walter', 'pepe', 'pepe@gmail.com', 'pepe123', NULL, NULL);
+
+-- INSERTS DE Orders
+INSERT INTO orders (order_id, username, date) VALUES
+(1, 'eniemed', '2024-05-02'),
+(2, 'eniemed', '2024-05-06'),
+(3, 'eniemed', '2024-05-12'),
+(4, 'pepe', '2024-05-13'),
+(5, 'eniemed', '2024-05-30'),
+(6, 'eniemed', '2024-05-31');
