@@ -35,6 +35,10 @@ Route::get('/orders/{username}', [ordersController::class, 'getOrders']);
 
 Route::get('/users/{username}/gift-packs', [usersController::class, 'getGiftPacks']);
 Route::post('/users/{username}/gift-packs', [usersController::class, 'addGiftPack']);
+Route::delete('/users/{username}/gift-packs/{packIndex}/products/{productId}', [usersController::class, 'removeProductFromGiftPack']);
+Route::delete('/user/{username}/gift-packs/{packId}/product/{number}', [usersController::class, 'removeAllInstancesFromGiftPack']);
+Route::post('/user/{username}/add/{packIndex}/product/{productId}', [usersController::class, 'addProductToGiftPack']);
+Route::delete('/user/{username}/pack/{packIndex}', [usersController::class, 'removeGiftPack']);
 
 Route::delete('/wishlist/{username}/clear', [usersController::class, "clearWishlist"]);
 Route::put('/wishlist/{username}/add/{id}', [usersController::class, 'addToWishlist']);

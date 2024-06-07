@@ -245,23 +245,25 @@ class usersController extends Controller
             return response()->json(['message' => 'User not found'], 404);
         }
 
-        // aqui divido la cadena gift_packs en múltiples cadenas, cada una conteniendo un solo objeto JSON
-        $giftPacksStrings = explode('],[', $user->gift_packs);
+        // Obtener la cadena de gift_packs
+        $giftPacksString = $user->gift_packs;
 
-        $giftPacks = [];
-        foreach ($giftPacksStrings as $giftPackString) {
-            if ($giftPackString[0] != '[') {
-                $giftPackString = '[' . $giftPackString;
-            }
-            if ($giftPackString[-1] != ']') {
-                $giftPackString = $giftPackString . ']';
-            }
-
-            $giftPack = json_decode($giftPackString, true);
-            $giftPacks[] = $giftPack;
+        // Comprobar si la cadena está vacía
+        if (empty($giftPacksString)) {
+            return response()->json(['message' => 'No gift packs found'], 404);
         }
 
-        return response()->json($giftPacks);
+        // Limpiar y corregir el formato de la cadena
+        $giftPacksString = '[' . $giftPacksString . ']';  // Añadir corchetes para que sea un JSON válido
+
+        // Convertir la cadena JSON en un array
+        $giftPacks = json_decode($giftPacksString, true);
+
+        if ($giftPacks === null && json_last_error() !== JSON_ERROR_NONE) {
+            return response()->json(['message' => 'Invalid gift packs format'], 400);
+        }
+
+        return response()->json($giftPacks, 200);
     }
 
     public function addGiftPack($username)
@@ -284,6 +286,194 @@ class usersController extends Controller
     }
 
 
+    public function removeAllInstancesFromGiftPack($username, $packIndex, $productId)
+    {
+        $user = users::find($username);
+
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+
+        // Obtener la cadena de gift_packs
+        $giftPacksString = $user->gift_packs;
+
+        // Limpiar y corregir el formato de la cadena
+        $giftPacksString = '[' . $giftPacksString . ']';  // Añadir corchetes para que sea un JSON válido
+
+        // Convertir la cadena JSON en un array
+        $giftPacks = json_decode($giftPacksString, true);
+
+        if ($giftPacks === null && json_last_error() !== JSON_ERROR_NONE) {
+            return response()->json(['message' => 'Invalid gift packs format'], 400);
+        }
+
+        // Comprobar si el pack existe
+        if (!isset($giftPacks[$packIndex])) {
+            return response()->json(['message' => 'Pack not found'], 404);
+        }
+
+        // Eliminar todas las instancias del producto del pack
+        $giftPacks[$packIndex] = array_values(array_filter($giftPacks[$packIndex], function ($product) use ($productId) {
+            return $product != $productId;
+        }));
+
+        // Convertir el array a JSON
+        $newGiftPacksString = json_encode($giftPacks);
+
+        // Eliminar los corchetes exteriores del JSON y limpiar el formato
+        $newGiftPacksString = substr($newGiftPacksString, 1, -1);
+
+        // Actualizar el campo gift_packs del usuario con los nuevos datos
+        $user->gift_packs = $newGiftPacksString;
+        $user->save();
+
+        return response()->json(['message' => 'All instances of product removed from gift pack'], 200);
+    }
+
+
+
+
+
+    public function removeProductFromGiftPack($username, $packIndex, $productId)
+    {
+        $user = users::find($username);
+
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+
+        // Obtener la cadena de gift_packs
+        $giftPacksString = $user->gift_packs;
+
+        // Limpiar y corregir el formato de la cadena
+        $giftPacksString = '[' . $giftPacksString . ']';  // Añadir corchetes para que sea un JSON válido
+
+        // Convertir la cadena JSON en un array
+        $giftPacks = json_decode($giftPacksString, true);
+
+        if ($giftPacks === null && json_last_error() !== JSON_ERROR_NONE) {
+            return response()->json(['message' => 'Invalid gift packs format'], 400);
+        }
+
+        // Comprobar si el pack existe
+        if (!isset($giftPacks[$packIndex])) {
+            return response()->json(['message' => 'Pack not found'], 404);
+        }
+
+
+
+        // Eliminar el producto del pack
+        $giftPacks[$packIndex] = array_values(array_filter($giftPacks[$packIndex], function ($product) use ($productId) {
+            return $product != $productId;
+        }));
+
+        // Convertir el array a JSON
+        $newGiftPacksString = json_encode($giftPacks);
+
+        // Eliminar los corchetes exteriores del JSON y limpiar el formato
+        $newGiftPacksString = substr($newGiftPacksString, 1, -1);
+
+        // Actualizar el campo gift_packs del usuario con los nuevos datos
+        $user->gift_packs = $newGiftPacksString;
+        $user->save();
+
+        return response()->json(['message' => 'Product removed from gift pack'], 200);
+    }
+    public function addProductToGiftPack($username, $packIndex, $productId)
+    {
+        // Buscar el usuario por su username
+        $user = users::where('username', $username)->first();
+
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+
+        // Obtener la cadena de gift_packs
+        $giftPacksString = $user->gift_packs;
+
+        // Limpiar y corregir el formato de la cadena
+        $giftPacksString = '[' . $giftPacksString . ']';  // Añadir corchetes para que sea un JSON válido
+
+        // Convertir la cadena JSON en un array
+        $giftPacks = json_decode($giftPacksString, true);
+
+        if ($giftPacks === null && json_last_error() !== JSON_ERROR_NONE) {
+            return response()->json(['message' => 'Invalid gift packs format'], 400);
+        }
+
+        // Comprobar si el pack existe
+        if (!isset($giftPacks[$packIndex])) {
+            return response()->json(['message' => 'Pack not found'], 404);
+        }
+
+        // Añadir el producto al pack correspondiente
+        if (empty($giftPacks[$packIndex])) {
+            $giftPacks[$packIndex] = [(int) $productId];
+        } else {
+            array_push($giftPacks[$packIndex], (int) $productId);
+        }
+
+
+        // Convertir el array a JSON
+        $newGiftPacksString = json_encode($giftPacks);
+
+        // Eliminar los corchetes exteriores del JSON y limpiar el formato
+        $newGiftPacksString = substr($newGiftPacksString, 1, -1);
+
+        // Actualizar el campo gift_packs del usuario con los nuevos datos
+        $user->gift_packs = $newGiftPacksString;
+        $user->save();
+
+        return response()->json(['message' => 'Product added to gift pack'], 200);
+    }
+
+    public function removeGiftPack($username, $packIndex)
+    {
+        $user = users::find($username);
+
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+
+        // Obtener la cadena de gift_packs
+        $giftPacksString = $user->gift_packs;
+
+        // Limpiar y corregir el formato de la cadena
+        $giftPacksString = '[' . $giftPacksString . ']';  // Añadir corchetes para que sea un JSON válido
+
+        // Convertir la cadena JSON en un array
+        $giftPacks = json_decode($giftPacksString, true);
+
+        if ($giftPacks === null && json_last_error() !== JSON_ERROR_NONE) {
+            return response()->json(['message' => 'Invalid gift packs format'], 400);
+        }
+
+        // Comprobar si el pack existe
+        if (!isset($giftPacks[$packIndex])) {
+            return response()->json(['message' => 'Pack not found'], 404);
+        }
+
+
+
+        // Eliminar el producto del pack
+        unset($giftPacks[$packIndex]);
+
+        // Reindexar el array para eliminar cualquier brecha en los índices
+        $giftPacks = array_values($giftPacks);
+
+        // Convertir cada subarray a una cadena
+        $giftPacks = array_map(function ($pack) {
+            return '[' . implode(',', $pack) . ']';
+        }, $giftPacks);
+
+        // Unir todas las cadenas en una sola
+        $newGiftPacksString = implode(',', $giftPacks);
+
+        // Actualizar el campo gift_packs del usuario con los nuevos datos
+        $user->gift_packs = $newGiftPacksString;
+        $user->save();
+
+        return response()->json(['message' => 'Product removed from gift pack'], 200);
+    }
 
 }
-
