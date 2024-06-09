@@ -14,8 +14,10 @@ class users extends Model
         'username',
         'email',
         'password',
-        'order_id',
-        'wishlist'
+        'wishlist',
+        'cart',
+        'discounts',
+        'gift_packs'
     ];
 
     protected $primaryKey = 'username';

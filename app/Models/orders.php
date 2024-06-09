@@ -7,17 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 class orders extends Model
 {
     protected $fillable = [
-        'product_id',
-        'order_date'
+        'username'
     ];
 
-    public function products()
-    {
-        return $this->belongsTo(products::class, 'product_id', 'id');
-    }
+    public $timestamps = false;
 
     public function users()
     {
-        return $this->belongsTo(users::class, 'order_id', 'id');
+        return $this->belongsTo(users::class, 'username', 'username');
     }
 }

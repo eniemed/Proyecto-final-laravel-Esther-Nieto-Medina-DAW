@@ -23,6 +23,8 @@ Route::get('/wishlist', [usersController::class, "wishlist"]);
 Route::get('/products/filter', [productsController::class, 'filterProducts']);
 Route::get('/products/flavors/{flavor}', [productsController::class, 'flavorFilter']);
 Route::put('/wishlist/{username}', [usersController::class, "removeFromWishlist"]);
+Route::get('/user/{username}/cart', [usersController::class, "getCart"]);
+Route::post('/user/{username}/clear-cart', [usersController::class, "clearCart"]);
 
 Route::post('/user/{username}/clear-discount', [usersController::class, "clearUserDiscounts"]);
 
@@ -32,6 +34,7 @@ Route::post('/user/{username}/cart/{productId}', [usersController::class, 'addPr
 Route::delete('/user/{username}/cart/{productId}/all', [usersController::class, 'removeAllOfProductFromCart']);
 
 Route::get('/orders/{username}', [ordersController::class, 'getOrders']);
+Route::post('/user/{username}/add-order', [ordersController::class, 'addOrder']);
 
 Route::get('/users/{username}/gift-packs', [usersController::class, 'getGiftPacks']);
 Route::post('/users/{username}/gift-packs', [usersController::class, 'addGiftPack']);
